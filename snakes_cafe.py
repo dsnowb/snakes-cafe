@@ -19,9 +19,8 @@ if __name__ == '__main__':
             print('\n{}'.format(cat.upper()))
             for item in cat_list:
                 print(item.title())
-        print('***********************************\
-                 ** What would you like to order? **\
-                 ***********************************')
+        print('\n{0}\n** What would you like to order? **\n{0}'.format('*'*35))
+
 
     def take_order():
         while 1:
@@ -32,19 +31,15 @@ if __name__ == '__main__':
             elif order not in [item.lower() for item in appetizers + entrees + desserts + drinks]:
                 print('{} not in menu.'.format(order))
             else:
-                if order in cart:
-                    cart[order] += 1
-                else:
-                    cart[order] = 1
+                cart[order] = cart[order] + 1 if order in cart else 1
                 print_cart()
 
 
     def print_cart():
-        print('CART')
-        print('*'*25)
+        print('{0}CART{0}\n'.format('*'*12))
         for item, amount in cart.items():
             print('{}: {}'.format(item, amount))
-        print('*'*25)
+        print('\n' + '*'*28)
 
 
     print_welcome()
