@@ -1,67 +1,101 @@
-if __name__ == '__main__':
+menu_categories = {
+    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers'],
+    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti'],
+    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie'],
+    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice'],
+    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn'],
+}
 
+menu_prices = {
+    'pop-tarts': 2.50,
+    'breadsticks': 1.10,
+    'chimichangas': 7.50,
+    'nachos': 5.00,
+    'funyons': 4.50,
+    'snickers': 2.00,
+    'cream of frog': 11.95,
+    'clam chowder': 11.00,
+    'crab rangoon': 22.00,
+    'burger': 5.00,
+    'taco': 2.00,
+    'spaghetti': 9.50,
+    'smarties': 1.00, 
+    'mochi': 2.50,
+    'chocolate circuits': 4.00,
+    'cheesecake': 7.00,
+    'fruit': 25.00,
+    'apple pie': 11.00,
+    'sprite': 2.50,
+    'most bitterest ipa ever': 8.00,
+    'root beer float': 8.00,
+    'coke': 45.00, 'Milk': 5.00,
+    'coconut juice': 2.50,
+    'lemons': 2.00,
+    'popcorn': 2.50,
+    'french fries': 1.45,
+    'french toast': 3.50,
+    'mashed potatoes': 4.50,
+    'corn': 2.50,
+}
 
-    menu = {
-        'Appetizers': {'Pop-Tarts': 2.50, 'Breadsticks': 1.10, 'Chimichangas': 7.50, 'Nachos': 5.00, 'Funyons': 4.50, 'Snickers': 2.00},
-        'Entrees': {'Cream of Frog': 11.95, 'Clam Chowder': 11.00, 'Crab Rangoon': 22.00, 'burger': 5.00, 'taco': 2.00, 'spaghetti': 9.50},
-        'Desserts': {'Smarties': 1.00, 'Mochi': 2.50, 'Chocolate Circuits': 4.00, 'Cheesecake': 7.00, 'Fruit': 25.00, 'Apple Pie': 11.00},
-        'Drinks': {'Sprite': 2.50, 'Most Bitterest IPA Ever': 8.00, 'Root Beer Float': 8.00, 'Coke': 45.00, 'Milk': 5.00, 'Coconut juice': 2.50},
-        'Sides': {'Lemons': 2.00, 'Popcorn': 2.50, 'French Fries': 1.45, ' French Toast': 3.50, 'Mashed Potatoes': 4.50, 'Corn': 2.50},
-    }
-    tax = 10.01
-    cart = {}
+tax = 10.01
+cart = {}
 
-    def user_input():
+def user_input():
+    while 1:
         order = input('>> ')
-        while 1:
-            if order == 'q':
-                print('Goodbye.')
-                break
-            if order.split()[0] == 'remove':
-                remove_cart(order)
-            if order == 'menu':
-                print_menu()
-
-    def print_menu():
-        pass
-
-    def remove_cart(item):
-        print '{} has been removed.'.format(item)
-        if item in cart:
-            cart[item] -= 1
-            if cart[item] == 0:
-                del cart[item]
+        if order == 'q':
+            print('Goodbye.')
+            break
+        elif order.split()[0] == 'remove':
+            remove_cart(order[7:].lower())
+        elif order == 'menu':
+            print_menu()
+        elif order == 'order':
+            print_cart()
         else:
-            print '{} not in cart.'.format(item)
+            add_to_cart(order.lower())
 
+def print_cart():
+    print('{0}CART{0}\n'.format('*'*12))
+    for item, amount in cart.items():
+        print('{}: {}'.format(item, amount))
+    print('Total: {:>17}{:.2f}\n{}'.format('$',sum([menu_prices[item]*count for item,count in cart.items()]),'*'*28))
 
+def print_menu():
+    for cat,cat_list in menu_categories.items():
+        print('\n{}\n{}'.format(cat,'*'*25))
+        for item in cat_list:
+            print(item)
 
-    def add_to_cart():
-        pass
+def remove_cart(item):
+    if item in cart:
+        cart[item] -= 1
+        if cart[item] == 0:
+            del cart[item]
+        print('{} has been removed.'.format(item))
+        print('Total: {:>17}{:.2f}\n{}'.format('$',sum([menu_prices[item]*count for item,count in cart.items()]),'*'*28))
+    else:
+        print('{} not in cart.'.format(item))
 
-    def print_welcome():
-        print("Welcome to Snake's Cafe!\nPress q any time to exit\n\nOur menu:\n")
-        for cat, cat_list in menu.items():
-            print('\n{}'.format(cat.upper()))
-            for item in cat_list:
-                print(item.title())
-        print('\n{0}\n** What would you like to order? **\n{0}'.format('*'*35))
+def add_to_cart(item):
+    if item not in [item.lower() for item in menu_prices]:
+        print('{} not in menu.'.format(item))
+    else:
+        cart[item] = cart[item] + 1 if item in cart else 1
+        print('{} added to order.'.format(item))
 
-    def take_order():
-        while 1:
-            order = user_input()
+def print_welcome():
+    print("Welcome to Snakes Cafe!\n\
+            Press 'q' any time to exit\n\
+            Type 'remove <item>' to remove an item\n\
+            Type 'menu' to see our menu\n\
+            Type 'order' to see your order\n\
+            Our menu:\n")
+    print_menu()
+    print('\n{0}\n** What would you like to order? **\n{0}'.format('*'*35))
 
-            elif order not in [item.lower() for cat in menu.keys() for item in menu[cat]]:
-                print('{} not in menu.'.format(order))
-            else:
-                cart[order] = cart[order] + 1 if order in cart else 1
-                print_cart()
-
-    def print_cart():
-        print('{0}CART{0}\n'.format('*'*12))
-        for item, amount in cart.items():
-            print('{}: {}'.format(item, amount))
-        print('\n' + '*'*28)
-
+if __name__ == '__main__':
     print_welcome()
-    take_order()
+    user_input()
+
