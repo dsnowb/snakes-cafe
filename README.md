@@ -8,7 +8,7 @@ This is a restaurant application that enables users to see a menu and create a c
 
 ## Getting Started
 Download the source code, navigate to the relevant downloads folder, and execute the script using the command:
-```python3 snakes_cafe.py
+```python3 snakes_cafe.py```
 You can exit the program by pressing the 'q' key at any time.
 
 ## Architecture
