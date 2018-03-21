@@ -88,15 +88,16 @@ def remove_cart(item):
         print('Total: {:>17}{:.2f}\n{}'.format('$', sum([menu_prices[item]*count for item,count in cart.items()]), '*'*28))
     else:
         print('{} not in cart.'.format(item))
+        return False
 
 
 def add_to_cart(item):
     if item not in [item.lower() for item in menu_prices]:
         print('{} not in menu.'.format(item))
+        return False
     else:
         cart[item] = cart[item] + 1 if item in cart else 1
         print('{} added to order.'.format(item))
-
 
 if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
