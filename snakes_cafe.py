@@ -2,11 +2,11 @@ import uuid
 
 
 menu_categories = {
-    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers'],
-    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti'],
-    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie'],
-    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice'],
-    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn'],
+    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos'],
+    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie'],
+    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies'],
+    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water'],
+    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage'],
 }
 
 menu_prices = {
@@ -40,7 +40,37 @@ menu_prices = {
     'mashed potatoes': 4.50,
     'corn': 2.50,
 }
-
+menu_stock = {
+    'pop-tarts': 10,
+    'breadsticks': 10,
+    'chimichangas': 50,
+    'nachos': 51,
+    'funyons': 40,
+    'snickers': 20,
+    'cream of frog': 15,
+    'clam chowder': 10,
+    'crab rangoon': 22,
+    'burger': 50,
+    'taco': 20,
+    'spaghetti': 90,
+    'smarties': 10,
+    'mochi': 20,
+    'chocolate circuits': 40,
+    'cheesecake': 70,
+    'fruit': 25,
+    'apple pie': 11,
+    'sprite': 25,
+    'most bitterest ipa ever': 80,
+    'root beer float': 80,
+    'coke': 45, 'Milk': 50,
+    'coconut juice': 25,
+    'lemons': 20,
+    'popcorn': 25,
+    'french fries': 14,
+    'french toast': 35,
+    'mashed potatoes': 45,
+    'corn': 25,
+}
 tax = .101
 cart = {}
 
@@ -53,6 +83,9 @@ def user_input():
             break
         elif order.split()[0] == 'remove':
             remove_cart(order[7:].lower())
+        elif order.split()[0] == 'load':
+            print(order)
+            parse_menu(order[5:])
         elif order == 'menu':
             print_menu(menu_categories)
         elif order == 'order':
@@ -76,7 +109,7 @@ def print_menu(menu):
     """
     printstring = 'Our Menu:'
     for cat,cat_list in menu.items():
-        printstring += '\n\n{}\n{}'.format(cat,'*'*25)
+        printstring += '\n\n{}\n{}'.format(cat, '*'*25)
         for item in cat_list:
             printstring += '\n' + item
 
@@ -112,6 +145,34 @@ def add_to_cart(item):
     else:
         cart[item] = cart[item] + 1 if item in cart else 1
         print('{} added to order.'.format(item))
+
+
+def parse_menu(menu_file):
+    if menu_file[-4:] != '.csv':
+        print('Invalid file extension')
+        return False
+    with open(menu_file) as file:
+        data = [line[:-1].split(',') for line in list(file)]
+    new_menu_categories = {}
+    new_menu_prices = {}
+    new_menu_stock = {}
+    try:
+        for line in data:
+            if line[1] in new_menu_categories:
+                new_menu_categories[line[1]].append(line[0])
+            else:
+                new_menu_categories[line[1]] = [line[0]]
+            new_menu_prices[line[0]] = float(line[2])
+            new_menu_stock[line[0]] = int(line[3])
+    except ValueError as e:
+        print('Invalid:', e)
+    else:
+        global menu_categories, menu_stock, menu_prices
+        menu_categories = new_menu_categories
+        menu_prices = new_menu_prices
+        menu_stock = new_menu_stock
+        return menu_file
+
 
 if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
