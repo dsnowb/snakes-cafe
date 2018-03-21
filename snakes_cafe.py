@@ -1,3 +1,6 @@
+import uuid
+
+
 menu_categories = {
     'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers'],
     'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti'],
@@ -41,6 +44,7 @@ menu_prices = {
 tax = 10.01
 cart = {}
 
+
 def user_input():
     while 1:
         order = input('>> ')
@@ -56,11 +60,11 @@ def user_input():
         else:
             add_to_cart(order.lower())
 
-def print_cart(cart):
-    printstring = '{0}CART{0}\n'.format('*'*12)
+def print_cart():
+    printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
     for item, amount in cart.items():
         printstring += '\n{}: {}'.format(item, amount)
-    printstring += '\nTotal: {:>17}{:.2f}\n{}'.format('$',sum([menu_prices[item]*count for item,count in cart.items()]),'*'*28)
+    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', sum([menu_prices[item]*count for item,count in cart.items()]), '='*43)
     print(printstring)
     return printstring
 
@@ -74,15 +78,17 @@ def print_menu(menu):
     print(printstring)
     return printstring
 
+
 def remove_cart(item):
     if item in cart:
         cart[item] -= 1
         if cart[item] == 0:
             del cart[item]
         print('{} has been removed.'.format(item))
-        print('Total: {:>17}{:.2f}\n{}'.format('$',sum([menu_prices[item]*count for item,count in cart.items()]),'*'*28))
+        print('Total: {:>17}{:.2f}\n{}'.format('$', sum([menu_prices[item]*count for item,count in cart.items()]), '*'*28))
     else:
         print('{} not in cart.'.format(item))
+
 
 def add_to_cart(item):
     if item not in [item.lower() for item in menu_prices]:
@@ -91,6 +97,7 @@ def add_to_cart(item):
         cart[item] = cart[item] + 1 if item in cart else 1
         print('{} added to order.'.format(item))
 
+
 if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
             Press 'q' any time to exit\n\
@@ -98,6 +105,6 @@ if __name__ == '__main__':
             Type 'menu' to see our menu\n\
             Type 'order' to see your order\n")
     print_menu(menu_categories)
-    print('\n{0}\n** What would you like to order? **\n{0}'.format('*'*35))
+    print('\n{0}\n** What would you like to order? **\n{0}'.format('*' * 35))
     user_input()
 
