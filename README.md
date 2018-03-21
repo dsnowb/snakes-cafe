@@ -1,7 +1,7 @@
 # Snakes Cafe
 
 **Author**: David Snowberger and George Ceja
-**Version**: 0.1
+**Version**: 0.2
 
 ## Overview
 This is a restaurant application that enables users to see a menu and create a customized order.
@@ -19,3 +19,4 @@ There is no API at this time.
 
 ## Change Log
 19 March 2018, 0100UT - Initial Revision created.
+20 March 2018, 0130UT - Refactored and added test file with containing tests
