@@ -52,11 +52,11 @@ def user_input():
         elif order == 'menu':
             print_menu()
         elif order == 'order':
-            print_cart()
+            print_cart(cart)
         else:
             add_to_cart(order.lower())
 
-def print_cart():
+def print_cart(cart):
     printstring = '{0}CART{0}\n'.format('*'*12)
     for item, amount in cart.items():
         printstring += '\n{}: {}'.format(item, amount)
@@ -64,9 +64,9 @@ def print_cart():
     print(printstring)
     return printstring
 
-def print_menu():
+def print_menu(menu):
     printstring = 'Our Menu:'
-    for cat,cat_list in menu_categories.items():
+    for cat,cat_list in menu.items():
         printstring += '\n\n{}\n{}'.format(cat,'*'*25)
         for item in cat_list:
             printstring += '\n' + item
@@ -97,7 +97,7 @@ if __name__ == '__main__':
             Type 'remove <item>' to remove an item\n\
             Type 'menu' to see our menu\n\
             Type 'order' to see your order\n")
-    print_menu()
+    print_menu(menu_categories)
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*'*35))
     user_input()
 
