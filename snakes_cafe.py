@@ -61,6 +61,8 @@ def user_input():
             add_to_cart(order.lower())
 
 def print_cart(cart):
+    """prints out all items in cart
+    """
     printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
     for item, amount in cart.items():
         printstring += '\n{}: {}'.format(item, amount)
@@ -69,6 +71,9 @@ def print_cart(cart):
     return printstring
 
 def print_menu(menu):
+    """
+    Prints out all items on the Menu
+    """
     printstring = 'Our Menu:'
     for cat,cat_list in menu.items():
         printstring += '\n\n{}\n{}'.format(cat,'*'*25)
@@ -80,6 +85,11 @@ def print_menu(menu):
 
 
 def remove_cart(item):
+    """
+    Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
+    specified product. If the item is no longer in cart it gets truanted.
+    """
+
     if item in cart:
         cart[item] -= 1
         if cart[item] == 0:
@@ -91,6 +101,10 @@ def remove_cart(item):
 
 
 def add_to_cart(item):
+    """
+    Accepts a request/order from user_input and validates if the request is inside the menu dictionary
+    And if then appends to the users cart for checkout
+    """
     if item not in [item.lower() for item in menu_prices]:
         print('{} not in menu.'.format(item))
     else:
