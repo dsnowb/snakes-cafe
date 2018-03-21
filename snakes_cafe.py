@@ -54,7 +54,7 @@ def user_input():
         elif order.split()[0] == 'remove':
             remove_cart(order[7:].lower())
         elif order == 'menu':
-            print_menu()
+            print_menu(menu_categories)
         elif order == 'order':
             print_cart(cart)
         else:
@@ -122,4 +122,3 @@ if __name__ == '__main__':
     print_menu(menu_categories)
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*' * 35))
     user_input()
-
