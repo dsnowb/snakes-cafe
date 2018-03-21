@@ -41,7 +41,7 @@ menu_prices = {
     'corn': 2.50,
 }
 
-tax = 10.01
+tax = .101
 cart = {}
 
 
@@ -66,7 +66,7 @@ def print_cart(cart):
     printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
     for item, amount in cart.items():
         printstring += '\n{}: {}'.format(item, amount)
-    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', sum([menu_prices[item]*count for item,count in cart.items()]), '='*43)
+    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item,count in cart.items()]), '='*43)
     print(printstring)
     return printstring
 
@@ -95,7 +95,7 @@ def remove_cart(item):
         if cart[item] == 0:
             del cart[item]
         print('{} has been removed.'.format(item))
-        print('Total: {:>17}{:.2f}\n{}'.format('$', sum([menu_prices[item]*count for item,count in cart.items()]), '*'*28))
+        print('Total: {:>17}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item,count in cart.items()]), '*'*28))
     else:
         print('{} not in cart.'.format(item))
         return False
