@@ -60,7 +60,7 @@ def user_input():
         else:
             add_to_cart(order.lower())
 
-def print_cart():
+def print_cart(cart):
     printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
     for item, amount in cart.items():
         printstring += '\n{}: {}'.format(item, amount)
