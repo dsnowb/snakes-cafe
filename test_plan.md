@@ -11,7 +11,9 @@ if more than one of the item is in cart, substract one from item in cart
 if one item is in cart, item is removed completely from cart
 
 ## print_menu
+validate that menu is a dictionary
 validate that expected menu is printed
 
 ## print_cart
+validate that cart is a dictionary
 validate that expected cart is printed
