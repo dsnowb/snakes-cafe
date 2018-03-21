@@ -57,16 +57,22 @@ def user_input():
             add_to_cart(order.lower())
 
 def print_cart():
-    print('{0}CART{0}\n'.format('*'*12))
+    printstring = '{0}CART{0}\n'.format('*'*12)
     for item, amount in cart.items():
-        print('{}: {}'.format(item, amount))
-    print('Total: {:>17}{:.2f}\n{}'.format('$',sum([menu_prices[item]*count for item,count in cart.items()]),'*'*28))
+        printstring += '\n{}: {}'.format(item, amount)
+    printstring += '\nTotal: {:>17}{:.2f}\n{}'.format('$',sum([menu_prices[item]*count for item,count in cart.items()]),'*'*28)
+    print(printstring)
+    return printstring
 
 def print_menu():
+    printstring = 'Our Menu:'
     for cat,cat_list in menu_categories.items():
-        print('\n{}\n{}'.format(cat,'*'*25))
+        printstring += '\n\n{}\n{}'.format(cat,'*'*25)
         for item in cat_list:
-            print(item)
+            printstring += '\n' + item
+
+    print(printstring)
+    return printstring
 
 def remove_cart(item):
     if item in cart:
@@ -85,17 +91,13 @@ def add_to_cart(item):
         cart[item] = cart[item] + 1 if item in cart else 1
         print('{} added to order.'.format(item))
 
-def print_welcome():
+if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
             Press 'q' any time to exit\n\
             Type 'remove <item>' to remove an item\n\
             Type 'menu' to see our menu\n\
-            Type 'order' to see your order\n\
-            Our menu:\n")
+            Type 'order' to see your order\n")
     print_menu()
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*'*35))
-
-if __name__ == '__main__':
-    print_welcome()
     user_input()
 
