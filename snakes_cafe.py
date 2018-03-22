@@ -31,7 +31,7 @@ class Order(object):
     def display_order(self):
         print(self)
 
-    def add_to_cart(self, item, quantity):
+    def add_item(self, item, quantity):
         """
         Accepts a request/order from user_input and validates if the request is inside the menu dictionary
         And if then appends to the users cart for checkout
@@ -188,9 +188,9 @@ def user_input(order):
                 try:
                     int(cur.split()[-1])
                 except ValueError:
-                    order.add_to_cart(cur.lower(), 1)
+                    order.add_item(cur.lower(), 1)
                 else:
-                    order.add_to_cart(' '.join(cur.lower().split()[:-1]), int(cur.split()[-1]))
+                    order.add_item(' '.join(cur.lower().split()[:-1]), int(cur.split()[-1]))
     except KeyboardInterrupt:
         print('\b\bGoodbye.\n')
         exit()
