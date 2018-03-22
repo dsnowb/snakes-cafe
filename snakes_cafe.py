@@ -22,7 +22,7 @@ menu_prices = {
     'burger': 5.00,
     'taco': 2.00,
     'spaghetti': 9.50,
-    'smarties': 1.00, 
+    'smarties': 1.00,
     'mochi': 2.50,
     'chocolate circuits': 4.00,
     'cheesecake': 7.00,
@@ -125,12 +125,13 @@ def user_input():
                 try:
                     int(order.split()[-1])
                 except ValueError:
-                    add_to_cart(order.lower(),1)
+                    add_to_cart(order.lower(), 1)
                 else:
-                    add_to_cart(' '.join(order.lower().split()[:-1]),int(order.split()[-1]))
+                    add_to_cart(' '.join(order.lower().split()[:-1]), int(order.split()[-1]))
     except KeyboardInterrupt:
         print('\b\bGoodbye.\n')
         exit()
+
 
 def print_cart(cart):
     """prints out all items in cart
@@ -138,16 +139,17 @@ def print_cart(cart):
     printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
     for item, amount in cart.items():
         printstring += '\n{}: {}'.format(item, amount)
-    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item,count in cart.items()]), '='*43)
+    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item, count in cart.items()]), '='*43)
     print(printstring)
     return printstring
+
 
 def print_menu(menu):
     """
     Prints out all items on the Menu
     """
     printstring = 'Our Menu:'
-    for cat,cat_list in menu.items():
+    for cat, cat_list in menu.items():
         printstring += '\n\n{}\n{}'.format(cat, '*'*25)
         for item in cat_list:
             printstring += '\n' + item
@@ -166,13 +168,13 @@ def remove_cart(item):
         menu_stock[item] += cart[item]
         del cart[item]
         print('{} has been removed.'.format(item))
-        print('Total: {:>17}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item,count in cart.items()]), '*'*28))
+        print('Total: {:>17}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item, count in cart.items()]), '*'*28))
     else:
         print('{} not in cart.'.format(item))
         return False
 
 
-def add_to_cart(item,quantity):
+def add_to_cart(item, quantity):
     """
     Accepts a request/order from user_input and validates if the request is inside the menu dictionary
     And if then appends to the users cart for checkout
@@ -200,7 +202,7 @@ def parse_menu(menu_file):
             data = [line[:-1].split(',') for line in list(file)]
     except FileNotFoundError:
         print('File not found')
-        
+
     new_menu_categories = {}
     new_menu_prices = {}
     new_menu_stock = {}
