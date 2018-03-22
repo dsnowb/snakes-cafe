@@ -195,8 +195,12 @@ def parse_menu(menu_file):
     if menu_file[-4:] != '.csv':
         print('Invalid file extension')
         return False
-    with open(menu_file) as file:
-        data = [line[:-1].split(',') for line in list(file)]
+    try:
+        with open(menu_file) as file:
+            data = [line[:-1].split(',') for line in list(file)]
+    except FileNotFoundError:
+        print('File not found')
+        
     new_menu_categories = {}
     new_menu_prices = {}
     new_menu_stock = {}
@@ -211,13 +215,13 @@ def parse_menu(menu_file):
     except ValueError as e:
         print('Invalid:', e)
     except:
-        print('Invalid Data')
+        print('Invalid Data Formatting')
     else:
         global menu_categories, menu_stock, menu_prices
         menu_categories = new_menu_categories
         menu_prices = new_menu_prices
         menu_stock = new_menu_stock
-        return menu_file
+        return (menu_file, menu_categories)
 
 
 if __name__ == '__main__':
