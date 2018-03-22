@@ -1,6 +1,73 @@
 import uuid
 
 
+class Order(object):
+    '''
+    Defines a blueprint for an Order, which is a cart filled with items selected from the available menu
+    dictionary. Methods available include the ability to add or remove items from the cart, and print
+    the cart, as well as display some values when global functions are used on the Order object
+    '''
+    tax = .101
+
+    def __init__(self):
+        self.cart = {}
+        self.total = 0
+        self.id = uuid.uuid4()
+
+    def __str__(self):
+        return self.display_order()
+
+    def __len__(self):
+        return sum([count for count in self.cart.values()])
+
+    def __repr__(self):
+        return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
+
+    def add_to_cart(self, item, quantity):
+        """
+        Accepts a request/order from user_input and validates if the request is inside the menu dictionary
+        And if then appends to the users cart for checkout
+        """
+        if quantity <= 0:
+            print('Please enter a positive quantity')
+        elif item not in [item.lower() for item in menu_prices]:
+            print('{} not in menu.'.format(item))
+            return False
+        else:
+            if quantity > menu_stock[item]:
+                print('Not added to cart. Only {} in stock'.format(menu_stock[item]))
+            else:
+                self.cart[item] = self.cart[item] + quantity if item in self.cart else quantity
+                menu_stock[item] -= quantity
+                self.total += (1+self.tax)*menu_prices[item]*quantity
+                print('{} added to order.'.format(item))
+
+    def display_order(self):
+        """Prints out all items in cart"""
+        printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, self.id)
+        for item, amount in self.cart.items():
+            printstring += '\n{}: {}'.format(item, amount)
+        printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', self.total, '='*43)
+        print(printstring)
+        return printstring
+
+    def remove_item(self, item):
+        """
+        Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
+        specified product. If the item is no longer in cart it gets truanted.
+        """
+
+        if item in self.cart:
+            menu_stock[item] += self.cart[item]
+            self.total -= (1+self.tax)*self.cart[item]
+            del self.cart[item]
+            print('{} has been removed.'.format(item))
+            print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
+        else:
+            print('{} not in cart.'.format(item))
+            return False
+
+
 menu_categories = {
     'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos'],
     'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie'],
@@ -101,96 +168,33 @@ menu_stock = {
     'stuffing': 21,
     'cabbage': 14,
 }
-tax = .101
-cart = {}
 
 
-def user_input():
+def user_input(order):
     try:
         while 1:
-            order = input('>> ')
-            if order == 'q':
+            cur = input('>> ')
+            if cur == 'q':
                 print('Goodbye.')
                 break
-            elif order.split()[0] == 'remove':
-                remove_cart(order[7:].lower())
-            elif order.split()[0] == 'load':
-                print(order)
-                parse_menu(order[5:])
-            elif order == 'menu':
+            elif cur.split()[0] == 'remove':
+                order.remove_item(cur[7:].lower())
+            elif cur.split()[0] == 'load':
+                parse_menu(cur[5:])
+            elif cur == 'menu':
                 print_menu(menu_categories)
-            elif order == 'order':
-                print_cart(cart)
+            elif cur == 'order':
+                order.display_order()
             else:
                 try:
-                    int(order.split()[-1])
+                    int(cur.split()[-1])
                 except ValueError:
-                    add_to_cart(order.lower(), 1)
+                    order.add_to_cart(cur.lower(), 1)
                 else:
-                    add_to_cart(' '.join(order.lower().split()[:-1]), int(order.split()[-1]))
+                    order.add_to_cart(' '.join(cur.lower().split()[:-1]), int(cur.split()[-1]))
     except KeyboardInterrupt:
         print('\b\bGoodbye.\n')
         exit()
-
-
-def print_cart(cart):
-    """prints out all items in cart
-    """
-    printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
-    for item, amount in cart.items():
-        printstring += '\n{}: {}'.format(item, amount)
-    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item, count in cart.items()]), '='*43)
-    print(printstring)
-    return printstring
-
-
-def print_menu(menu):
-    """
-    Prints out all items on the Menu
-    """
-    printstring = 'Our Menu:'
-    for cat, cat_list in menu.items():
-        printstring += '\n\n{}\n{}'.format(cat, '*'*25)
-        for item in cat_list:
-            printstring += '\n' + item
-
-    print(printstring)
-    return printstring
-
-
-def remove_cart(item):
-    """
-    Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
-    specified product. If the item is no longer in cart it gets truanted.
-    """
-
-    if item in cart:
-        menu_stock[item] += cart[item]
-        del cart[item]
-        print('{} has been removed.'.format(item))
-        print('Total: {:>17}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item, count in cart.items()]), '*'*28))
-    else:
-        print('{} not in cart.'.format(item))
-        return False
-
-
-def add_to_cart(item, quantity):
-    """
-    Accepts a request/order from user_input and validates if the request is inside the menu dictionary
-    And if then appends to the users cart for checkout
-    """
-    if quantity <= 0:
-        print('Please enter a positive quantity')
-    elif item not in [item.lower() for item in menu_prices]:
-        print('{} not in menu.'.format(item))
-        return False
-    else:
-        if quantity > menu_stock[item]:
-            print('Not added to cart. Only {} in stock'.format(menu_stock[item]))
-        else:
-            cart[item] = cart[item] + quantity if item in cart else quantity
-            menu_stock[item] -= quantity
-            print('{} added to order.'.format(item))
 
 
 def parse_menu(menu_file):
@@ -230,6 +234,20 @@ def parse_menu(menu_file):
         return menu_file, menu_categories
 
 
+def print_menu(menu):
+    """
+    Prints out all items on the Menu
+    """
+    printstring = 'Our Menu:'
+    for cat, cat_list in menu.items():
+        printstring += '\n\n{}\n{}'.format(cat, '*'*25)
+        for item in cat_list:
+            printstring += '\n' + item
+
+    print(printstring)
+    return printstring
+
+
 if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
             Press 'q' any time to exit\n\
@@ -239,4 +257,5 @@ if __name__ == '__main__':
             Type 'order' to see your order\n")
     print_menu(menu_categories)
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*' * 35))
-    user_input()
+    tom = Order()
+    user_input(tom)
