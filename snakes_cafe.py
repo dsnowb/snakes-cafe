@@ -194,10 +194,7 @@ def add_to_cart(item, quantity):
 
 
 def parse_menu(menu_file):
-    """
-    Parse Menu excepts a `.CSV` file that updates/overwrites previous dictionaries to update the Restaurant Menu
-
-    """
+    """Parse Menu excepts a `.CSV` file that updates/overwrites previous dictionaries to update the Restaurant Menu."""
     if menu_file[-4:] != '.csv':
         print('Invalid file extension')
         return False
