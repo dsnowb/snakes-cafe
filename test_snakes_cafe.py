@@ -81,4 +81,7 @@ def test_parse_menu_bad_file():
         assert cafe.parse_menu('bad_menu.csv')
 
 def test_parse_menu_updated_menu():
+    """
+    Validates that the menu updates when a custom menu is loaded
+    """
     assert 'Drinks' not in cafe.parse_menu('menu.csv')[1].keys()
