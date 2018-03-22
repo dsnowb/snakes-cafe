@@ -15,13 +15,21 @@ class Order(object):
         self.id = uuid.uuid4()
 
     def __str__(self):
-        return self.display_order()
+        """Prints out all items in cart"""
+        printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, self.id)
+        for item, amount in self.cart.items():
+            printstring += '\n{}: {}'.format(item, amount)
+        printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', self.total, '='*43)
+        return printstring
 
     def __len__(self):
         return sum([count for count in self.cart.values()])
 
     def __repr__(self):
         return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
+
+    def display_order(self):
+        print(self)
 
     def add_to_cart(self, item, quantity):
         """
@@ -42,15 +50,6 @@ class Order(object):
                 self.total += (1+self.tax)*menu_prices[item]*quantity
                 print('{} added to order.'.format(item))
 
-    def display_order(self):
-        """Prints out all items in cart"""
-        printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, self.id)
-        for item, amount in self.cart.items():
-            printstring += '\n{}: {}'.format(item, amount)
-        printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', self.total, '='*43)
-        print(printstring)
-        return printstring
-
     def remove_item(self, item):
         """
         Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
@@ -59,7 +58,7 @@ class Order(object):
 
         if item in self.cart:
             menu_stock[item] += self.cart[item]
-            self.total -= (1+self.tax)*self.cart[item]
+            self.total -= (1+self.tax)*menu_prices[item]*self.cart[item]
             del self.cart[item]
             print('{} has been removed.'.format(item))
             print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
