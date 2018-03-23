@@ -77,11 +77,11 @@ class Order(object):
 
 
 menu_categories = {
-    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos'],
-    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie'],
-    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies'],
-    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water'],
-    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage'],
+    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos', 'Chicken Breasts', 'Rabbit', 'Waffles'],
+    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie', 'Duck', 'Goose', 'Pig'],
+    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies', 'Creamsickle', 'Peanuts', 'Caramel'],
+    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water', 'Wine', 'Coffee', 'Tea'],
+    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage', 'Bacon', 'Hash Browns', 'Pancakes'],
 }
 
 menu_prices = {
@@ -129,6 +129,21 @@ menu_prices = {
     'wings': 7.00,
     'stuffing': 2.25,
     'cabbage': 14.50,
+    'chicken breasts': 10.00,
+    'rabbit': 5.00,
+    'waffles': 7.00,
+    'duck': 12.00,
+    'goose': 18.00,
+    'pig': 9.76,
+    'creamsickle': 13.00,
+    'peanuts': 12.00,
+    'caramel': 2.50,
+    'wine': 7.00,
+    'coffee': 3.00,
+    'tea': 1.25,
+    'bacon': 3.00,
+    'hash browns': 2.00,
+    'pancakes': 17.00,
 }
 menu_stock = {
     'pop-tarts': 10,
@@ -175,6 +190,21 @@ menu_stock = {
     'wings': 7,
     'stuffing': 21,
     'cabbage': 14,
+    'chicken breasts': 10,
+    'rabbit': 5,
+    'waffles': 7,
+    'duck': 12,
+    'goose': 18,
+    'pig': 9,
+    'creamsickle': 13,
+    'peanuts': 12,
+    'caramel': 2,
+    'wine': 7,
+    'coffee': 3,
+    'tea': 1,
+    'bacon': 3,
+    'hash browns': 2,
+    'pancakes': 17,
 }
 
 
@@ -196,7 +226,7 @@ def user_input(order):
             elif cur == 'menu':
                 print_menu(menu_categories)
             elif cur == 'order':
-                order.display_order()
+                print(order)
             elif cur == 'check':
                 order.print_receipt()
             else:
