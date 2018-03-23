@@ -58,13 +58,14 @@ class Order(object):
         if item in self.cart:
             if quantity > self.cart[item]:
                 print('Quantity is more than in cart for', item)
-            self.total -= (1+self.tax)*menu_prices[item]*quantity
-            self.cart[item] -= quantity
-            menu_stock[item] += self.cart[item]
-            print('Removed {0} {1}(s). {2} {1}(s) left.'.format(quantity, item, self.cart[item]))
-            print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
-            if self.cart[item] == 0:
-                del self.cart[item]
+            else:
+                self.total -= (1+self.tax)*menu_prices[item]*quantity
+                self.cart[item] -= quantity
+                menu_stock[item] += self.cart[item]
+                print('Removed {0} {1}(s). {2} {1}(s) left.'.format(quantity, item, self.cart[item]))
+                print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
+                if self.cart[item] == 0:
+                    del self.cart[item]
         else:
             print('{} not in cart.'.format(item))
             return False
@@ -73,7 +74,6 @@ class Order(object):
         """Creates receipt in seperate file"""
         with open('{}.csv'.format(self.id), 'w') as file:
             file.write(self.display_order())
-
 
 
 menu_categories = {
