@@ -28,8 +28,7 @@ class Order(object):
     def __repr__(self):
         return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
 
-    def display_order(self):
-        print(self)
+    display_order = __str__
 
     def add_item(self, item, quantity=1):
         """
@@ -50,21 +49,31 @@ class Order(object):
                 self.total += (1+self.tax)*menu_prices[item]*quantity
                 print('{} added to order.'.format(item))
 
-    def remove_item(self, item):
+    def remove_item(self, item, quantity=1):
         """
         Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
         specified product. If the item is no longer in cart it gets truanted.
         """
 
         if item in self.cart:
+            if quantity > self.cart[item]:
+                print('Quantity is more than in cart for', item)
+            self.total -= (1+self.tax)*menu_prices[item]*quantity
+            self.cart[item] -= quantity
             menu_stock[item] += self.cart[item]
-            self.total -= (1+self.tax)*menu_prices[item]*self.cart[item]
-            del self.cart[item]
-            print('{} has been removed.'.format(item))
+            print('Removed {0} {1}(s). {2} {1}(s) left.'.format(quantity, item, self.cart[item]))
             print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
+            if self.cart[item] == 0:
+                del self.cart[item]
         else:
             print('{} not in cart.'.format(item))
             return False
+
+    def print_receipt(self):
+        """Creates receipt in seperate file"""
+        with open('{}.csv'.format(self.id), 'w') as file:
+            file.write(self.display_order())
+
 
 
 menu_categories = {
@@ -170,6 +179,7 @@ menu_stock = {
 
 
 def user_input(order):
+    """Accepts user input and invokes appropriate order methods"""
     try:
         while 1:
             cur = input('>> ')
@@ -177,13 +187,18 @@ def user_input(order):
                 print('Goodbye.')
                 break
             elif cur.split()[0] == 'remove':
-                order.remove_item(cur[7:].lower())
+                try:
+                    order.remove_item(' '.join(cur[7:].split()[:-1]), int(cur.split()[-1]))
+                except:
+                    order.remove_item(cur[7:])
             elif cur.split()[0] == 'load':
                 parse_menu(cur[5:])
             elif cur == 'menu':
                 print_menu(menu_categories)
             elif cur == 'order':
                 order.display_order()
+            elif cur == 'check':
+                order.print_receipt()
             else:
                 try:
                     order.add_item(' '.join(cur.lower().split()[:-1]), int(cur.split()[-1]))
@@ -229,9 +244,7 @@ def parse_menu(menu_file):
 
 
 def print_menu(menu):
-    """
-    Prints out all items on the Menu
-    """
+    """Prints out all items on the Menu"""
     printstring = 'Our Menu:'
     for cat, cat_list in menu.items():
         printstring += '\n\n{}\n{}'.format(cat, '*'*25)
