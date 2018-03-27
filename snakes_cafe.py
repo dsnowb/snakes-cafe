@@ -213,6 +213,8 @@ def user_input(order):
     try:
         while 1:
             cur = input('>> ')
+            if cur == '':
+                continue
             if cur == 'q':
                 print('Goodbye.')
                 break
@@ -225,6 +227,8 @@ def user_input(order):
                 parse_menu(cur[5:])
             elif cur == 'menu':
                 print_menu(menu_categories)
+            elif cur.split()[0] == 'menu':
+                print_menu_category(cur.split()[1])
             elif cur == 'order':
                 print(order)
             elif cur == 'check':
@@ -284,6 +288,13 @@ def print_menu(menu):
     print(printstring)
     return printstring
 
+def print_menu_category(category):
+    """Prints a menu category"""
+    printstring = '{}\n'.format(category)
+    for item in menu_categories[category]:
+        printstring += '\n{}'.format(item)
+    print(printstring)
+    return printstring
 
 if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
