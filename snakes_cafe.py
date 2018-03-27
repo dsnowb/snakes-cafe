@@ -290,8 +290,13 @@ def print_menu(menu):
 
 def print_menu_category(category):
     """Prints a menu category"""
+    print(category)
+    print(menu_categories.keys())
+    if category.lower().title() not in menu_categories:
+        print('Menu category not found')
+        return 0
     printstring = '{}\n'.format(category)
-    for item in menu_categories[category]:
+    for item in menu_categories[category.lower().title()]:
         printstring += '\n{}'.format(item)
     print(printstring)
     return printstring

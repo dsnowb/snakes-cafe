@@ -111,3 +111,8 @@ def test_receipt_writes(cur):
     cur.print_receipt()
     with open('{}.csv'.format(cur.id)) as f:
         assert cur.display_order() == f.read()
+
+def test_print_menu_categories():
+    cafe.menu_categories = {'Category':['Item'], 'Another Category':['Cat2 Item', 'Another Cat2 Item']}
+    assert cafe.print_menu_category('Category') == 'Category\n\nItem'
+    assert cafe.print_menu_category('booyas') == 0
