@@ -292,8 +292,6 @@ def print_menu(menu):
 
 def print_menu_category(category):
     """Prints a menu category"""
-    print(category)
-    print(menu_categories.keys())
     if category.lower().title() not in menu_categories:
         print('Menu category not found')
         return 0
@@ -312,7 +310,6 @@ if __name__ == '__main__':
             Type 'menu' to see our menu\n\
             Type 'order' to see your order\n")
     print(print_menu(menu_categories))
-    print(menu_categories)
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*' * 35))
     tom = Order()
     user_input(tom)
