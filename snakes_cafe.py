@@ -75,7 +75,6 @@ class Order(object):
             file.write(self.display_order())
 
 
-
 menu_categories = {
     'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos'],
     'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie'],
@@ -262,7 +261,8 @@ if __name__ == '__main__':
             Type 'load <menu.csv>' to load custom menu\n\
             Type 'menu' to see our menu\n\
             Type 'order' to see your order\n")
-    print_menu(menu_categories)
+    print(print_menu(menu_categories))
+    print(menu_categories)
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*' * 35))
     tom = Order()
     user_input(tom)
