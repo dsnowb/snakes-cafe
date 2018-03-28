@@ -1,12 +1,88 @@
 import uuid
 
 
+class Order(object):
+    '''
+    Defines a blueprint for an Order, which is a cart filled with items selected from the available menu
+    dictionary. Methods available include the ability to add or remove items from the cart, and print
+    the cart, as well as display some values when global functions are used on the Order object
+    '''
+    tax = .101
+
+    def __init__(self):
+        self.cart = {}
+        self.total = 0
+        self.id = uuid.uuid4()
+
+    def __str__(self):
+        """Prints out all items in cart"""
+        printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, self.id)
+        for item, amount in self.cart.items():
+            printstring += '\n{}: {}'.format(item, amount)
+        printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', self.total, '='*43)
+        return printstring
+
+    def __len__(self):
+        return sum([count for count in self.cart.values()])
+
+    def __repr__(self):
+        return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
+
+    def display_order(self):
+        return self.__str__()
+
+    def add_item(self, item, quantity=1):
+        """
+        Accepts a request/order from user_input and validates if the request is inside the menu dictionary
+        And if then appends to the users cart for checkout
+        """
+        if quantity <= 0:
+            print('Please enter a positive quantity')
+        elif item not in [item.lower() for item in menu_prices]:
+            print('{} not in menu.'.format(item))
+            return False
+        else:
+            if quantity > menu_stock[item]:
+                print('Not added to cart. Only {} in stock'.format(menu_stock[item]))
+            else:
+                self.cart[item] = self.cart[item] + quantity if item in self.cart else quantity
+                menu_stock[item] -= quantity
+                self.total += (1+self.tax)*menu_prices[item]*quantity
+                print('{} added to order.'.format(item))
+
+    def remove_item(self, item, quantity=1):
+        """
+        Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
+        specified product. If the item is no longer in cart it gets truanted.
+        """
+
+        if item in self.cart:
+            if quantity > self.cart[item]:
+                print('Quantity is more than in cart for', item)
+            else:
+                self.total -= (1+self.tax)*menu_prices[item]*quantity
+                self.cart[item] -= quantity
+                menu_stock[item] += self.cart[item]
+                print('Removed {0} {1}(s). {2} {1}(s) left.'.format(quantity, item, self.cart[item]))
+                print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
+                if self.cart[item] == 0:
+                    del self.cart[item]
+        else:
+            print('{} not in cart.'.format(item))
+            return False
+
+    def print_receipt(self):
+        """Creates receipt in seperate file"""
+        with open('{}.csv'.format(self.id), 'w') as file:
+            file.write(self.display_order())
+
+
 menu_categories = {
-    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos'],
-    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie'],
-    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies'],
-    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water'],
-    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage'],
+    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos', 'Chicken Breasts', 'Rabbit', 'Waffles'],
+    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie', 'Duck', 'Goose', 'Pig'],
+    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies', 'Creamsickle', 'Peanuts', 'Caramel'],
+    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water', 'Wine', 'Coffee', 'Tea'],
+    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage', 'Bacon', 'Hash Browns', 'Pancakes'],
 }
 
 menu_prices = {
@@ -54,6 +130,21 @@ menu_prices = {
     'wings': 7.00,
     'stuffing': 2.25,
     'cabbage': 14.50,
+    'chicken breasts': 10.00,
+    'rabbit': 5.00,
+    'waffles': 7.00,
+    'duck': 12.00,
+    'goose': 18.00,
+    'pig': 9.76,
+    'creamsickle': 13.00,
+    'peanuts': 12.00,
+    'caramel': 2.50,
+    'wine': 7.00,
+    'coffee': 3.00,
+    'tea': 1.25,
+    'bacon': 3.00,
+    'hash browns': 2.00,
+    'pancakes': 17.00,
 }
 menu_stock = {
     'pop-tarts': 10,
@@ -100,104 +191,61 @@ menu_stock = {
     'wings': 7,
     'stuffing': 21,
     'cabbage': 14,
+    'chicken breasts': 10,
+    'rabbit': 5,
+    'waffles': 7,
+    'duck': 12,
+    'goose': 18,
+    'pig': 9,
+    'creamsickle': 13,
+    'peanuts': 12,
+    'caramel': 2,
+    'wine': 7,
+    'coffee': 3,
+    'tea': 1,
+    'bacon': 3,
+    'hash browns': 2,
+    'pancakes': 17,
 }
-tax = .101
-cart = {}
 
 
-def user_input():
+def user_input(order):
+    """Accepts user input and invokes appropriate order methods"""
     try:
         while 1:
-            order = input('>> ')
-            if order == 'q':
+            cur = input('>> ')
+            if cur == '':
+                continue
+            if cur == 'q':
                 print('Goodbye.')
                 break
-            elif order.split()[0] == 'remove':
-                remove_cart(order[7:].lower())
-            elif order.split()[0] == 'load':
-                print(order)
-                parse_menu(order[5:])
-            elif order == 'menu':
+            elif cur.split()[0] == 'remove':
+                try:
+                    order.remove_item(' '.join(cur[7:].split()[:-1]), int(cur.split()[-1]))
+                except:
+                    order.remove_item(cur[7:])
+            elif cur.split()[0] == 'load':
+                parse_menu(cur[5:])
+            elif cur == 'menu':
                 print_menu(menu_categories)
-            elif order == 'order':
-                print_cart(cart)
+            elif cur.split()[0] == 'menu':
+                print_menu_category(cur.split()[1])
+            elif cur == 'order':
+                print(order)
+            elif cur == 'check':
+                order.print_receipt()
             else:
                 try:
-                    int(order.split()[-1])
+                    order.add_item(' '.join(cur.lower().split()[:-1]), int(cur.split()[-1]))
                 except ValueError:
-                    add_to_cart(order.lower(), 1)
-                else:
-                    add_to_cart(' '.join(order.lower().split()[:-1]), int(order.split()[-1]))
+                    order.add_item(cur.lower())
     except KeyboardInterrupt:
         print('\b\bGoodbye.\n')
         exit()
 
 
-def print_cart(cart):
-    """prints out all items in cart
-    """
-    printstring = '{0}CART{0}\nOrder #{1}\n'.format('='*20, uuid.uuid4())
-    for item, amount in cart.items():
-        printstring += '\n{}: {}'.format(item, amount)
-    printstring += '\nTotal: {:>31}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item, count in cart.items()]), '='*43)
-    print(printstring)
-    return printstring
-
-
-def print_menu(menu):
-    """
-    Prints out all items on the Menu
-    """
-    printstring = 'Our Menu:'
-    for cat, cat_list in menu.items():
-        printstring += '\n\n{}\n{}'.format(cat, '*'*25)
-        for item in cat_list:
-            printstring += '\n' + item
-
-    print(printstring)
-    return printstring
-
-
-def remove_cart(item):
-    """
-    Accepts a request/order from user_input and validates if the request is in the cart and if so removes 1 of the
-    specified product. If the item is no longer in cart it gets truanted.
-    """
-
-    if item in cart:
-        menu_stock[item] += cart[item]
-        del cart[item]
-        print('{} has been removed.'.format(item))
-        print('Total: {:>17}{:.2f}\n{}'.format('$', (1+tax)*sum([menu_prices[item]*count for item, count in cart.items()]), '*'*28))
-    else:
-        print('{} not in cart.'.format(item))
-        return False
-
-
-def add_to_cart(item, quantity):
-    """
-    Accepts a request/order from user_input and validates if the request is inside the menu dictionary
-    And if then appends to the users cart for checkout
-    """
-    if quantity <= 0:
-        print('Please enter a positive quantity')
-    elif item not in [item.lower() for item in menu_prices]:
-        print('{} not in menu.'.format(item))
-        return False
-    else:
-        if quantity > menu_stock[item]:
-            print('Not added to cart. Only {} in stock'.format(menu_stock[item]))
-        else:
-            cart[item] = cart[item] + quantity if item in cart else quantity
-            menu_stock[item] -= quantity
-            print('{} added to order.'.format(item))
-
-
 def parse_menu(menu_file):
-    """
-    Parse Menu excepts a `.CSV` file that updates/overwrites previous dictionaries to update the Restaurant Menu
-
-    """
+    """Parse Menu excepts a `.CSV` file that updates/overwrites previous dictionaries to update the Restaurant Menu."""
     if menu_file[-4:] != '.csv':
         print('Invalid file extension')
         return False
@@ -230,6 +278,30 @@ def parse_menu(menu_file):
         return menu_file, menu_categories
 
 
+def print_menu(menu):
+    """Prints out all items on the Menu"""
+    printstring = 'Our Menu:'
+    for cat, cat_list in menu.items():
+        printstring += '\n\n{}\n{}'.format(cat, '*'*25)
+        for item in cat_list:
+            printstring += '\n' + item
+
+    print(printstring)
+    return printstring
+
+
+def print_menu_category(category):
+    """Prints a menu category"""
+    if category.lower().title() not in menu_categories:
+        print('Menu category not found')
+        return 0
+    printstring = '{}\n'.format(category)
+    for item in menu_categories[category.lower().title()]:
+        printstring += '\n{}'.format(item)
+    print(printstring)
+    return printstring
+
+
 if __name__ == '__main__':
     print("Welcome to Snakes Cafe!\n\
             Press 'q' any time to exit\n\
@@ -237,6 +309,7 @@ if __name__ == '__main__':
             Type 'load <menu.csv>' to load custom menu\n\
             Type 'menu' to see our menu\n\
             Type 'order' to see your order\n")
-    print_menu(menu_categories)
+    print(print_menu(menu_categories))
     print('\n{0}\n** What would you like to order? **\n{0}'.format('*' * 35))
-    user_input()
+    tom = Order()
+    user_input(tom)
