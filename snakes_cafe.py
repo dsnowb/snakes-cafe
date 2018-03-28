@@ -29,7 +29,7 @@ class Order(object):
         return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
 
     def display_order(self):
-        return print(self)
+        return self.__str__()
 
     def add_item(self, item, quantity=1):
         """

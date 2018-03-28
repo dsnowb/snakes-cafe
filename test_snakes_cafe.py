@@ -76,6 +76,8 @@ def test_display_order(cur):
     cur.cart = {'pop-tarts': 2}
     assert isinstance(cur.cart, dict) is True
     assert isinstance(cur.display_order(), str)
+    assert cur.display_order() == '====================CART====================\nOrder #{}\n\n\
+pop-tarts: 2\nTotal:                               $0.00\n==========================================='.format(cur.id)
 
 
 def test_parse_menu_valid_extension(cur):
