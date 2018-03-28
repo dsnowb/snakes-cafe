@@ -28,7 +28,8 @@ class Order(object):
     def __repr__(self):
         return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
 
-    display_order = __str__
+    def display_order(self):
+        return print(self)
 
     def add_item(self, item, quantity=1):
         """
