@@ -28,7 +28,8 @@ class Order(object):
     def __repr__(self):
         return '<Order #{} | Items: {} | Total: ${:.2f}>'.format(self.id, len(self), self.total)
 
-    display_order = __str__
+    def display_order(self):
+        return self.__str__()
 
     def add_item(self, item, quantity=1):
         """
@@ -58,13 +59,14 @@ class Order(object):
         if item in self.cart:
             if quantity > self.cart[item]:
                 print('Quantity is more than in cart for', item)
-            self.total -= (1+self.tax)*menu_prices[item]*quantity
-            self.cart[item] -= quantity
-            menu_stock[item] += self.cart[item]
-            print('Removed {0} {1}(s). {2} {1}(s) left.'.format(quantity, item, self.cart[item]))
-            print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
-            if self.cart[item] == 0:
-                del self.cart[item]
+            else:
+                self.total -= (1+self.tax)*menu_prices[item]*quantity
+                self.cart[item] -= quantity
+                menu_stock[item] += self.cart[item]
+                print('Removed {0} {1}(s). {2} {1}(s) left.'.format(quantity, item, self.cart[item]))
+                print('Total: {:>17}{:.2f}\n{}'.format('$', self.total, '*'*28))
+                if self.cart[item] == 0:
+                    del self.cart[item]
         else:
             print('{} not in cart.'.format(item))
             return False
@@ -76,11 +78,11 @@ class Order(object):
 
 
 menu_categories = {
-    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos'],
-    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie'],
-    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies'],
-    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water'],
-    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage'],
+    'Appetizers': ['Pop-Tarts', 'Breadsticks', 'Chimichangas', 'Nachos', 'Funyons', 'Snickers', 'Mini-Toast', 'Wheat-Thins', 'Fritos', 'Chicken Breasts', 'Rabbit', 'Waffles'],
+    'Entrees': ['Cream of Frog', 'Clam Chowder', 'Crab Rangoon', 'Burger', 'Taco', 'Spaghetti', 'Steak', 'Shrimp stu', 'Hoagie', 'Duck', 'Goose', 'Pig'],
+    'Desserts': ['Smarties', 'Mochi', 'Chocolate Circuits', 'Cheesecake', 'Fruit', 'Apple Pie', 'Dippin-Dots', 'M&Ms', 'Brownies', 'Creamsickle', 'Peanuts', 'Caramel'],
+    'Drinks': ['Sprite', 'Most Bitterest IPA Ever', 'Root Beer Float', 'Coke', 'Milk', 'Coconut Juice', 'RedBull', 'Budweiser', 'Water', 'Wine', 'Coffee', 'Tea'],
+    'Sides': ['Lemons', 'Popcorn', 'French Fries', 'French Toast', 'Mashed Potatoes', 'Corn', 'Wings', 'Stuffing', 'Cabbage', 'Bacon', 'Hash Browns', 'Pancakes'],
 }
 
 menu_prices = {
@@ -128,6 +130,21 @@ menu_prices = {
     'wings': 7.00,
     'stuffing': 2.25,
     'cabbage': 14.50,
+    'chicken breasts': 10.00,
+    'rabbit': 5.00,
+    'waffles': 7.00,
+    'duck': 12.00,
+    'goose': 18.00,
+    'pig': 9.76,
+    'creamsickle': 13.00,
+    'peanuts': 12.00,
+    'caramel': 2.50,
+    'wine': 7.00,
+    'coffee': 3.00,
+    'tea': 1.25,
+    'bacon': 3.00,
+    'hash browns': 2.00,
+    'pancakes': 17.00,
 }
 menu_stock = {
     'pop-tarts': 10,
@@ -174,6 +191,21 @@ menu_stock = {
     'wings': 7,
     'stuffing': 21,
     'cabbage': 14,
+    'chicken breasts': 10,
+    'rabbit': 5,
+    'waffles': 7,
+    'duck': 12,
+    'goose': 18,
+    'pig': 9,
+    'creamsickle': 13,
+    'peanuts': 12,
+    'caramel': 2,
+    'wine': 7,
+    'coffee': 3,
+    'tea': 1,
+    'bacon': 3,
+    'hash browns': 2,
+    'pancakes': 17,
 }
 
 
@@ -182,6 +214,8 @@ def user_input(order):
     try:
         while 1:
             cur = input('>> ')
+            if cur == '':
+                continue
             if cur == 'q':
                 print('Goodbye.')
                 break
@@ -194,8 +228,10 @@ def user_input(order):
                 parse_menu(cur[5:])
             elif cur == 'menu':
                 print_menu(menu_categories)
+            elif cur.split()[0] == 'menu':
+                print_menu_category(cur.split()[1])
             elif cur == 'order':
-                order.display_order()
+                print(order)
             elif cur == 'check':
                 order.print_receipt()
             else:
@@ -250,6 +286,20 @@ def print_menu(menu):
         for item in cat_list:
             printstring += '\n' + item
 
+    print(printstring)
+    return printstring
+
+
+def print_menu_category(category):
+    """Prints a menu category"""
+    print(category)
+    print(menu_categories.keys())
+    if category.lower().title() not in menu_categories:
+        print('Menu category not found')
+        return 0
+    printstring = '{}\n'.format(category)
+    for item in menu_categories[category.lower().title()]:
+        printstring += '\n{}'.format(item)
     print(printstring)
     return printstring
 
